@@ -1,0 +1,806 @@
+<!DOCTYPE html><html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>資料結構課程線上學習平台</title>
+  <style>
+    :root{
+      --bg:#0f172a;          /* slate-900 */
+      --panel:#111827;       /* gray-900 */
+      --muted:#1f2937;       /* gray-800 */
+      --card:#0b1224;        /* deep panel */
+      --text:#e5e7eb;        /* gray-200 */
+      --accent:#60a5fa;      /* blue-400 */
+      --accent-2:#22d3ee;    /* cyan-400 */
+      --ok:#34d399;          /* emerald-400 */
+      --warn:#fbbf24;        /* amber-400 */
+      --danger:#fb7185;      /* rose-400 */
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 80% -10%, #1e293b 10%, transparent 60%) , var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1200px; margin:0 auto; padding:24px}/* Topbar */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:saturate(140%) blur(10px);
+  background:rgba(17,24,39,0.7); /* gray-900/70 */
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 16px}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{
+  width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:grid; place-items:center; color:#00111b; font-weight:900; box-shadow:var(--shadow);
+}
+.brand h1{font-size:18px; margin:0; letter-spacing:.5px}
+
+.nav{display:flex; flex-wrap:wrap; gap:8px}
+.nav button{
+  border:0; padding:10px 14px; border-radius:999px; cursor:pointer;
+  background:transparent; color:var(--text); opacity:.9;
+}
+.nav button.active{background:linear-gradient(135deg,#1f2937,#111827); outline:1px solid rgba(255,255,255,0.08)}
+.nav button:hover{opacity:1}
+
+/* Auth panel */
+.auth{position:relative}
+.auth-summary{display:flex; align-items:center; gap:8px}
+.auth .pill{padding:8px 12px; border-radius:999px; background:#111827; border:1px solid rgba(255,255,255,.08)}
+.dropdown{position:absolute; right:0; top:48px; width:340px; background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:14px; box-shadow:var(--shadow); display:none}
+.dropdown.open{display:block}
+.tabs{display:flex; gap:6px; padding:10px}
+.tabs button{flex:1; border:1px solid rgba(255,255,255,.08); background:#0b1224; color:var(--text); padding:8px; border-radius:10px; cursor:pointer}
+.tabs button.active{background:linear-gradient(135deg,#0b1224,#0e1831); outline:1px solid rgba(255,255,255,.10)}
+form{padding:12px 14px; display:grid; gap:10px}
+label{font-size:12px; opacity:.9}
+input, select{
+  width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:#0b1224; color:var(--text)
+}
+.btn{display:inline-block; padding:10px 14px; border-radius:12px; border:0; cursor:pointer; text-align:center}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#00111b; font-weight:700}
+.btn.ghost{background:#0b1224; color:var(--text); border:1px solid rgba(255,255,255,.08)}
+
+/* Sections */
+main{padding:16px}
+section{display:none}
+section.active{display:block}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); box-shadow:var(--shadow)}
+.hero{min-height:60vh; display:grid; place-items:center; text-align:center; padding:40px}
+.hero h2{font-size:44px; margin:8px 0 4px 0}
+.hero p{opacity:.9; margin:0 0 16px 0}
+.hero .big-img{width:min(980px,95%); height:320px; border-radius:20px; border:1px dashed rgba(255,255,255,.25); display:grid; place-items:center; font-size:22px; opacity:.9}
+
+.grid{display:grid; gap:16px}
+.grid.cols-3{grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));}
+.center{text-align:center}
+
+.ds-card{padding:16px}
+.ds-card h3{margin:4px 0 8px 0}
+.img-ph{height:140px; border:1px dashed rgba(255,255,255,.25); border-radius:12px; display:grid; place-items:center; opacity:.9}
+
+.progress-list{display:grid; gap:12px}
+.progress-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border-radius:12px; background:#0b1224; border:1px solid rgba(255,255,255,.06)}
+
+table{width:100%; border-collapse:collapse}
+th, td{padding:10px; border-bottom:1px solid rgba(255,255,255,.06)}
+
+.game-pad{padding:18px; min-height:220px; border-radius:14px; border:1px dashed rgba(255,255,255,.25); display:grid; place-items:center; opacity:.9}
+
+footer{opacity:.6; font-size:12px; padding:24px; text-align:center}
+
+@media (max-width:720px){
+  .brand h1{display:none}
+  .topbar-inner{gap:8px}
+}
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner container">
+      <div class="brand">
+        <div class="logo">DS</div>
+        <h1>資料結構課程線上學習平台</h1>
+      </div>
+      <nav class="nav" id="topNav">
+        <!-- 主要導覽：點擊切換頁面 -->
+        <button data-target="home" class="active">首頁</button>
+        <button data-target="guide">導覽</button>
+        <button data-target="progress">學習進度</button>
+        <button data-target="hanoi">河內塔</button>
+        <button data-target="array">陣列</button>
+        <button data-target="graph">圖形</button>
+        <button data-target="tree">樹狀結構</button>
+        <button data-target="search">搜尋</button>
+        <button data-target="sort">排序法</button>
+        <button data-target="admin" id="adminTab" style="display:none">管理頁</button>
+      </nav>
+      <div class="auth">
+        <div class="auth-summary">
+          <span id="userBadge" class="pill">未登入</span>
+          <button id="authToggle" class="btn ghost">註冊 / 登入</button>
+        </div>
+        <div class="dropdown" id="authDropdown">
+          <div class="tabs">
+            <button id="tabSignup" class="active">註冊</button>
+            <button id="tabLogin">登入</button>
+          </div>
+          <div id="signupPane">
+            <form id="signupForm">
+              <div>
+                <label>使用者姓名（限定英文+數字）</label>
+                <input id="suName" required placeholder="例如: Alex99" pattern="[A-Za-z0-9]+" />
+              </div>
+              <div>
+                <label>密碼（英文+數字，至少 8 碼）</label>
+                <input id="suPass" type="password" required minlength="8" />
+              </div>
+              <button class="btn primary" type="submit">建立帳號</button>
+            </form>
+          </div>
+          <div id="loginPane" style="display:none">
+            <form id="loginForm">
+              <div>
+                <label>使用者姓名</label>
+                <input id="liName" required />
+              </div>
+              <div>
+                <label>密碼</label>
+                <input id="liPass" type="password" required />
+              </div>
+              <button class="btn primary" type="submit">登入</button>
+            </form>
+          </div>
+          <div class="center" style="padding:8px 12px">
+            <button id="logoutBtn" class="btn ghost" style="display:none">登出</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>  <main class="container">
+    <!-- 首頁 -->
+    <section id="home" class="active">
+      <div class="hero card">
+        <div>
+          <h2>演算法</h2>
+          <p>從經典到進階，用互動遊戲學資料結構與演算法。</p>
+          <div class="big-img">範例圖片（首頁大圖，請自行放入）</div>
+          <div class="center" style="margin-top:16px">
+            <button class="btn primary" id="startLearningBtn">開始學習 → 導覽</button>
+          </div>
+        </div>
+      </div>
+    </section><!-- 導覽：每個資料結構都要一格介紹 + 圖片 + 開始遊戲按鈕 -->
+<section id="guide">
+  <h2>導覽</h2>
+  <p>以下為本平台主題介紹。每一格皆提供「範例圖片」佔位與「開始遊戲」按鈕，點擊後將切換到對應頁面。</p>
+  <div class="grid cols-3">
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（河內塔）</div>
+      <h3>河內塔</h3>
+      <p>經典遞迴思維練習，將圓盤依規則從起始柱移到目標柱。</p>
+      <div class="center"><button class="btn primary" data-go="hanoi">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（陣列）</div>
+      <h3>陣列</h3>
+      <p>體驗索引、遍歷、插入與刪除的基本操作概念。</p>
+      <div class="center"><button class="btn primary" data-go="array">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（圖形）</div>
+      <h3>圖形（Graph）</h3>
+      <p>以節點與邊建立世界，嘗試走訪、最短路徑與連通性。</p>
+      <div class="center"><button class="btn primary" data-go="graph">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（樹狀）</div>
+      <h3>樹狀結構</h3>
+      <p>從二元樹到搜尋樹，理解插入、刪除、遍歷與平衡。</p>
+      <div class="center"><button class="btn primary" data-go="tree">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（搜尋）</div>
+      <h3>搜尋</h3>
+      <p>線性/二元搜尋，比較時間複雜度與適用情境。</p>
+      <div class="center"><button class="btn primary" data-go="search">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（排序）</div>
+      <h3>排序法</h3>
+      <p>泡沫、插入、快速排序等，以互動觀察交換與分割。</p>
+      <div class="center"><button class="btn primary" data-go="sort">開始遊戲</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 學習進度 -->
+<section id="progress">
+  <h2>學習進度</h2>
+  <p>登入後可勾選學習狀態，系統會記錄於您的帳號（本機端儲存）。</p>
+  <div class="card" style="padding:16px">
+    <div class="progress-list">
+      <div class="progress-item"><span>河內塔</span><input type="checkbox" data-progress="hanoi"></div>
+      <div class="progress-item"><span>陣列</span><input type="checkbox" data-progress="array"></div>
+      <div class="progress-item"><span>圖形（Graph）</span><input type="checkbox" data-progress="graph"></div>
+      <div class="progress-item"><span>樹狀結構</span><input type="checkbox" data-progress="tree"></div>
+      <div class="progress-item"><span>搜尋</span><input type="checkbox" data-progress="search"></div>
+      <div class="progress-item"><span>排序法</span><input type="checkbox" data-progress="sort"></div>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn primary" id="saveProgressBtn">儲存進度</button>
+    </div>
+  </div>
+  <h3 style="margin-top:20px">遊戲歷史紀錄</h3>
+  <div class="card" style="padding:16px">
+    <table id="historyTable">
+      <thead><tr><th>時間</th><th>主題</th><th>事件</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 以下各資料結構頁：以「遊戲呈現」的區域保留佔位（可自行實作） -->
+<section id="hanoi">
+  <h2>河內塔</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（河內塔）</div>
+  <p>任務：將圓盤依規則移動至目標柱。這是遞迴的經典題。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="hanoi">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入元件/Canvas/SVG 等）</div>
+</section>
+
+<section id="array">
+  <h2>陣列</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（陣列）</div>
+  <p>任務：體驗索引遍歷、插入刪除、記錄操作步驟。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="array">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="graph">
+  <h2>圖形（Graph）</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（圖形）</div>
+  <p>任務：在圖上進行走訪（BFS/DFS）、嘗試最短路徑。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="graph">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="tree">
+  <h2>樹狀結構</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（樹狀）</div>
+  <p>任務：操作插入、刪除與遍歷，觀察樹高與平衡。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="tree">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="search">
+  <h2>搜尋</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（搜尋）</div>
+  <p>任務：比較線性與二元搜尋的步數差異與限制。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="search">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+<!DOCTYPE html><html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>資料結構課程線上學習平台</title>
+  <style>
+    :root{
+      --bg:#0f172a;          /* slate-900 */
+      --panel:#111827;       /* gray-900 */
+      --muted:#1f2937;       /* gray-800 */
+      --card:#0b1224;        /* deep panel */
+      --text:#e5e7eb;        /* gray-200 */
+      --accent:#60a5fa;      /* blue-400 */
+      --accent-2:#22d3ee;    /* cyan-400 */
+      --ok:#34d399;          /* emerald-400 */
+      --warn:#fbbf24;        /* amber-400 */
+      --danger:#fb7185;      /* rose-400 */
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 80% -10%, #1e293b 10%, transparent 60%) , var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    .container{max-width:1200px; margin:0 auto; padding:24px}/* Topbar */
+.topbar{
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:saturate(140%) blur(10px);
+  background:rgba(17,24,39,0.7); /* gray-900/70 */
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.topbar-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 16px}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{
+  width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:grid; place-items:center; color:#00111b; font-weight:900; box-shadow:var(--shadow);
+}
+.brand h1{font-size:18px; margin:0; letter-spacing:.5px}
+
+.nav{display:flex; flex-wrap:wrap; gap:8px}
+.nav button{
+  border:0; padding:10px 14px; border-radius:999px; cursor:pointer;
+  background:transparent; color:var(--text); opacity:.9;
+}
+.nav button.active{background:linear-gradient(135deg,#1f2937,#111827); outline:1px solid rgba(255,255,255,0.08)}
+.nav button:hover{opacity:1}
+
+/* Auth panel */
+.auth{position:relative}
+.auth-summary{display:flex; align-items:center; gap:8px}
+.auth .pill{padding:8px 12px; border-radius:999px; background:#111827; border:1px solid rgba(255,255,255,.08)}
+.dropdown{position:absolute; right:0; top:48px; width:340px; background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:14px; box-shadow:var(--shadow); display:none}
+.dropdown.open{display:block}
+.tabs{display:flex; gap:6px; padding:10px}
+.tabs button{flex:1; border:1px solid rgba(255,255,255,.08); background:#0b1224; color:var(--text); padding:8px; border-radius:10px; cursor:pointer}
+.tabs button.active{background:linear-gradient(135deg,#0b1224,#0e1831); outline:1px solid rgba(255,255,255,.10)}
+form{padding:12px 14px; display:grid; gap:10px}
+label{font-size:12px; opacity:.9}
+input, select{
+  width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:#0b1224; color:var(--text)
+}
+.btn{display:inline-block; padding:10px 14px; border-radius:12px; border:0; cursor:pointer; text-align:center}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#00111b; font-weight:700}
+.btn.ghost{background:#0b1224; color:var(--text); border:1px solid rgba(255,255,255,.08)}
+
+/* Sections */
+main{padding:16px}
+section{display:none}
+section.active{display:block}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius); box-shadow:var(--shadow)}
+.hero{min-height:60vh; display:grid; place-items:center; text-align:center; padding:40px}
+.hero h2{font-size:44px; margin:8px 0 4px 0}
+.hero p{opacity:.9; margin:0 0 16px 0}
+.hero .big-img{width:min(980px,95%); height:320px; border-radius:20px; border:1px dashed rgba(255,255,255,.25); display:grid; place-items:center; font-size:22px; opacity:.9}
+
+.grid{display:grid; gap:16px}
+.grid.cols-3{grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));}
+.center{text-align:center}
+
+.ds-card{padding:16px}
+.ds-card h3{margin:4px 0 8px 0}
+.img-ph{height:140px; border:1px dashed rgba(255,255,255,.25); border-radius:12px; display:grid; place-items:center; opacity:.9}
+
+.progress-list{display:grid; gap:12px}
+.progress-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px; border-radius:12px; background:#0b1224; border:1px solid rgba(255,255,255,.06)}
+
+table{width:100%; border-collapse:collapse}
+th, td{padding:10px; border-bottom:1px solid rgba(255,255,255,.06)}
+
+.game-pad{padding:18px; min-height:220px; border-radius:14px; border:1px dashed rgba(255,255,255,.25); display:grid; place-items:center; opacity:.9}
+
+footer{opacity:.6; font-size:12px; padding:24px; text-align:center}
+
+@media (max-width:720px){
+  .brand h1{display:none}
+  .topbar-inner{gap:8px}
+}
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner container">
+      <div class="brand">
+        <div class="logo">DS</div>
+        <h1>資料結構課程線上學習平台</h1>
+      </div>
+      <nav class="nav" id="topNav">
+        <!-- 主要導覽：點擊切換頁面 -->
+        <button data-target="home" class="active">首頁</button>
+        <button data-target="guide">導覽</button>
+        <button data-target="progress">學習進度</button>
+        <button data-target="hanoi">河內塔</button>
+        <button data-target="array">陣列</button>
+        <button data-target="graph">圖形</button>
+        <button data-target="tree">樹狀結構</button>
+        <button data-target="search">搜尋</button>
+        <button data-target="sort">排序法</button>
+        <button data-target="admin" id="adminTab" style="display:none">管理頁</button>
+      </nav>
+      <div class="auth">
+        <div class="auth-summary">
+          <span id="userBadge" class="pill">未登入</span>
+          <button id="authToggle" class="btn ghost">註冊 / 登入</button>
+        </div>
+        <div class="dropdown" id="authDropdown">
+          <div class="tabs">
+            <button id="tabSignup" class="active">註冊</button>
+            <button id="tabLogin">登入</button>
+          </div>
+          <div id="signupPane">
+            <form id="signupForm">
+              <div>
+                <label>使用者姓名（限定英文+數字）</label>
+                <input id="suName" required placeholder="例如: Alex99" pattern="[A-Za-z0-9]+" />
+              </div>
+              <div>
+                <label>密碼（英文+數字，至少 8 碼）</label>
+                <input id="suPass" type="password" required minlength="8" />
+              </div>
+              <button class="btn primary" type="submit">建立帳號</button>
+            </form>
+          </div>
+          <div id="loginPane" style="display:none">
+            <form id="loginForm">
+              <div>
+                <label>使用者姓名</label>
+                <input id="liName" required />
+              </div>
+              <div>
+                <label>密碼</label>
+                <input id="liPass" type="password" required />
+              </div>
+              <button class="btn primary" type="submit">登入</button>
+            </form>
+          </div>
+          <div class="center" style="padding:8px 12px">
+            <button id="logoutBtn" class="btn ghost" style="display:none">登出</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>  <main class="container">
+    <!-- 首頁 -->
+    <section id="home" class="active">
+      <div class="hero card">
+        <div>
+          <h2>演算法</h2>
+          <p>從經典到進階，用互動遊戲學資料結構與演算法。</p>
+          <div class="big-img">範例圖片（首頁大圖，請自行放入）</div>
+          <div class="center" style="margin-top:16px">
+            <button class="btn primary" id="startLearningBtn">開始學習 → 導覽</button>
+          </div>
+        </div>
+      </div>
+    </section><!-- 導覽：每個資料結構都要一格介紹 + 圖片 + 開始遊戲按鈕 -->
+<section id="guide">
+  <h2>導覽</h2>
+  <p>以下為本平台主題介紹。每一格皆提供「範例圖片」佔位與「開始遊戲」按鈕，點擊後將切換到對應頁面。</p>
+  <div class="grid cols-3">
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（河內塔）</div>
+      <h3>河內塔</h3>
+      <p>經典遞迴思維練習，將圓盤依規則從起始柱移到目標柱。</p>
+      <div class="center"><button class="btn primary" data-go="hanoi">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（陣列）</div>
+      <h3>陣列</h3>
+      <p>體驗索引、遍歷、插入與刪除的基本操作概念。</p>
+      <div class="center"><button class="btn primary" data-go="array">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（圖形）</div>
+      <h3>圖形（Graph）</h3>
+      <p>以節點與邊建立世界，嘗試走訪、最短路徑與連通性。</p>
+      <div class="center"><button class="btn primary" data-go="graph">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（樹狀）</div>
+      <h3>樹狀結構</h3>
+      <p>從二元樹到搜尋樹，理解插入、刪除、遍歷與平衡。</p>
+      <div class="center"><button class="btn primary" data-go="tree">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（搜尋）</div>
+      <h3>搜尋</h3>
+      <p>線性/二元搜尋，比較時間複雜度與適用情境。</p>
+      <div class="center"><button class="btn primary" data-go="search">開始遊戲</button></div>
+    </div>
+    <div class="ds-card card">
+      <div class="img-ph">範例圖片（排序）</div>
+      <h3>排序法</h3>
+      <p>泡沫、插入、快速排序等，以互動觀察交換與分割。</p>
+      <div class="center"><button class="btn primary" data-go="sort">開始遊戲</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 學習進度 -->
+<section id="progress">
+  <h2>學習進度</h2>
+  <p>登入後可勾選學習狀態，系統會記錄於您的帳號（本機端儲存）。</p>
+  <div class="card" style="padding:16px">
+    <div class="progress-list">
+      <div class="progress-item"><span>河內塔</span><input type="checkbox" data-progress="hanoi"></div>
+      <div class="progress-item"><span>陣列</span><input type="checkbox" data-progress="array"></div>
+      <div class="progress-item"><span>圖形（Graph）</span><input type="checkbox" data-progress="graph"></div>
+      <div class="progress-item"><span>樹狀結構</span><input type="checkbox" data-progress="tree"></div>
+      <div class="progress-item"><span>搜尋</span><input type="checkbox" data-progress="search"></div>
+      <div class="progress-item"><span>排序法</span><input type="checkbox" data-progress="sort"></div>
+    </div>
+    <div class="center" style="margin-top:12px">
+      <button class="btn primary" id="saveProgressBtn">儲存進度</button>
+    </div>
+  </div>
+  <h3 style="margin-top:20px">遊戲歷史紀錄</h3>
+  <div class="card" style="padding:16px">
+    <table id="historyTable">
+      <thead><tr><th>時間</th><th>主題</th><th>事件</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 以下各資料結構頁：以「遊戲呈現」的區域保留佔位（可自行實作） -->
+<section id="hanoi">
+  <h2>河內塔</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（河內塔）</div>
+  <p>任務：將圓盤依規則移動至目標柱。這是遞迴的經典題。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="hanoi">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入元件/Canvas/SVG 等）</div>
+</section>
+
+<section id="array">
+  <h2>陣列</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（陣列）</div>
+  <p>任務：體驗索引遍歷、插入刪除、記錄操作步驟。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="array">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="graph">
+  <h2>圖形（Graph）</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（圖形）</div>
+  <p>任務：在圖上進行走訪（BFS/DFS）、嘗試最短路徑。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="graph">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="tree">
+  <h2>樹狀結構</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（樹狀）</div>
+  <p>任務：操作插入、刪除與遍歷，觀察樹高與平衡。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="tree">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="search">
+  <h2>搜尋</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（搜尋）</div>
+  <p>任務：比較線性與二元搜尋的步數差異與限制。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="search">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<section id="sort">
+  <h2>排序法</h2>
+  <div class="img-ph" style="margin-bottom:12px">範例圖片（排序）</div>
+  <p>任務：觀察泡沫、插入、快速排序等交換/分割過程。</p>
+  <div class="center" style="margin:10px 0"><button class="btn primary" data-start="sort">開始遊戲</button></div>
+  <div class="game-pad">遊戲區（未實作，請自行放入互動模組）</div>
+</section>
+
+<!-- 管理員頁（登入 Lan99 / 97778801a 後才會顯示） -->
+<section id="admin">
+  <h2>管理員：使用者註冊紀錄</h2>
+  <p>僅在管理員登入後顯示。列出「帳號、註冊時間、密碼」供審閱（教學示範用）。</p>
+  <div class="card" style="padding:16px">
+    <table id="adminUsersTable">
+      <thead><tr><th>帳號</th><th>註冊時間</th><th>密碼</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+  </main>  <footer>
+    本頁僅為課堂/示範用途。實務上請勿以明文儲存密碼，務必改用雜湊與後端驗證。
+  </footer>  <script>
+    // ====== 資料儲存結構（localStorage） ======
+    // users: {
+    //   [username]: { password, createdAt, progress:{hanoi:Boolean,...}, history:[{topic, event, timeStr}] }
+    // }
+    const LS_KEY = 'ds-learning-users';
+    const users = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+
+    let currentUser = null; // {name}
+
+    // ====== 小工具 ======
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const fmtNow = () => new Date().toLocaleString();
+
+    function saveUsers(){ localStorage.setItem(LS_KEY, JSON.stringify(users)); }
+
+    function ensureUser(name){
+      if(!users[name]){
+        users[name] = { password:'', createdAt: fmtNow(), progress: {}, history: [] };
+      }
+      if(!users[name].progress) users[name].progress = {};
+      if(!Array.isArray(users[name].history)) users[name].history = [];
+    }
+
+    function setBadge(){ $('#userBadge').textContent = currentUser? `已登入：${currentUser}` : '未登入'; }
+
+    function setActive(tab){
+      // nav active
+      $$('#topNav button').forEach(b=> b.classList.toggle('active', b.dataset.target===tab));
+      // section active
+      $$('main section').forEach(sec=> sec.classList.toggle('active', sec.id===tab));
+      // hash
+      if(location.hash.replace('#','')!==tab){ location.hash = tab; }
+    }
+
+    function go(tab){ setActive(tab); }
+
+    function updateProgressUI(){
+      if(!currentUser) return;
+      const prog = users[currentUser]?.progress || {};
+      $$('[data-progress]').forEach(chk => {
+        const key = chk.getAttribute('data-progress');
+        chk.checked = !!prog[key];
+      });
+      // history
+      const tbody = $('#historyTable tbody');
+      tbody.innerHTML='';
+      (users[currentUser]?.history||[]).slice().reverse().forEach(item=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${item.timeStr}</td><td>${item.topic}</td><td>${item.event}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function saveProgress(){
+      if(!currentUser){ alert('請先登入'); return; }
+      ensureUser(currentUser);
+      $$('[data-progress]').forEach(chk => {
+        const key = chk.getAttribute('data-progress');
+        users[currentUser].progress[key] = chk.checked;
+      });
+      saveUsers();
+      alert('已儲存進度');
+    }
+
+    function logHistory(topic, event){
+      if(!currentUser) return; // 未登入就不記錄
+      ensureUser(currentUser);
+      users[currentUser].history.push({ topic, event, timeStr: fmtNow() });
+      saveUsers();
+      updateProgressUI();
+    }
+
+    function refreshAdmin(){
+      const isAdmin = currentUser === 'Lan99';
+      $('#adminTab').style.display = isAdmin ? '' : 'none';
+      if(isAdmin){
+        // 填表
+        const tbody = $('#adminUsersTable tbody');
+        tbody.innerHTML='';
+        Object.entries(users).forEach(([name, u])=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${name}</td><td>${u.createdAt||''}</td><td>${u.password||''}</td>`;
+          tbody.appendChild(tr);
+        });
+      } else {
+        if($('#admin').classList.contains('active')) setActive('home');
+      }
+    }
+
+    // ====== 導覽列 ======
+    $$('#topNav button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target = btn.dataset.target;
+        if(target==='admin' && currentUser!=='Lan99'){ return; }
+        go(target);
+      });
+    });
+
+    // Hash 路由（重新整理時保留頁面）
+    window.addEventListener('hashchange', ()=>{
+      const t = location.hash.replace('#','') || 'home';
+      if(t==='admin' && currentUser!=='Lan99') return;
+      setActive(t);
+    });
+
+    // 首頁 → 導覽
+    $('#startLearningBtn').addEventListener('click', ()=> go('guide'));
+
+    // 導覽每格 → 對應頁
+    $$('#guide [data-go]').forEach(b=>{
+      b.addEventListener('click', ()=> go(b.getAttribute('data-go')));
+    });
+
+    // 資料結構頁面：開始遊戲（紀錄歷史）
+    $$('[data-start]').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const topic = b.getAttribute('data-start');
+        logHistory(topic, '開始遊戲');
+        alert('已記錄開始遊戲（示範）。');
+      });
+    });
+
+    // 學習進度紀錄
+    $('#saveProgressBtn').addEventListener('click', saveProgress);
+
+    // ====== Auth 面板 ======
+    const authDD = $('#authDropdown');
+    $('#authToggle').addEventListener('click', ()=>{
+      authDD.classList.toggle('open');
+    });
+    document.addEventListener('click', (e)=>{
+      if(!authDD.contains(e.target) && !$('#authToggle').contains(e.target)){
+        authDD.classList.remove('open');
+      }
+    });
+
+    // 切換註冊/登入
+    $('#tabSignup').addEventListener('click', ()=>{
+      $('#tabSignup').classList.add('active');
+      $('#tabLogin').classList.remove('active');
+      $('#signupPane').style.display='block';
+      $('#loginPane').style.display='none';
+    });
+    $('#tabLogin').addEventListener('click', ()=>{
+      $('#tabLogin').classList.add('active');
+      $('#tabSignup').classList.remove('active');
+      $('#signupPane').style.display='none';
+      $('#loginPane').style.display='block';
+    });
+
+    // 註冊
+    $('#signupForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = $('#suName').value.trim();
+      const pass = $('#suPass').value;
+
+      const nameOK = /^[A-Za-z0-9]+$/.test(name);
+      const passOK = pass.length>=8 && /[A-Za-z]/.test(pass) && /[0-9]/.test(pass);
+      if(!nameOK){ alert('使用者姓名僅能包含英文與數字'); return; }
+      if(!passOK){ alert('密碼需包含英文與數字且至少 8 碼'); return; }
+      if(users[name]){ alert('此帳號已存在'); return; }
+
+      users[name] = { password: pass, createdAt: fmtNow(), progress: {}, history: [] };
+      saveUsers();
+      alert('註冊成功，請登入');
+      $('#tabLogin').click();
+    });
+
+    // 登入
+    $('#loginForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = $('#liName').value.trim();
+      const pass = $('#liPass').value;
+
+      // 管理員（固定帳密）
+      if(name==='Lan99' && pass==='97778801a'){
+        currentUser = name; setBadge(); refreshAdmin(); updateProgressUI();
+        authDD.classList.remove('open'); $('#logoutBtn').style.display='inline-block';
+        go('admin');
+        return;
+      }
+
+      if(!users[name]){ alert('找不到帳號，請先註冊'); return; }
+      if(users[name].password !== pass){ alert('密碼錯誤'); return; }
+
+      currentUser = name; setBadge(); refreshAdmin(); updateProgressUI();
+      authDD.classList.remove('open'); $('#logoutBtn').style.display='inline-block';
+      go('guide');
+    });
+
+    // 登出
+    $('#logoutBtn').addEventListener('click', ()=>{
+      currentUser = null; setBadge(); refreshAdmin();
+      $('#logoutBtn').style.display='none';
+      go('home');
+    });
+
+    // 初始：若 hash 有頁面則定位
+    setBadge();
+    const first = location.hash.replace('#','') || 'home';
+    setActive(first);
+  </script></body>
+</html>
